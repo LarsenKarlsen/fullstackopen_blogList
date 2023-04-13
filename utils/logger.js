@@ -5,11 +5,15 @@ const timestamp = () =>  {
 }
 
 const info = (...params) => {
-  console.log(timestamp(), ...params)
+  if (process.env.NODE_ENV !== "test") {
+    console.log(timestamp(), ...params)
+  }
 }
 
 const error = (...params) => {
-  console.error(timestamp(), ...params)
+  if (process.env.NODE_ENV !== "test") {
+    console.error(timestamp(), ...params)
+  }
 }
 
 module.exports = {
