@@ -5,14 +5,6 @@ const mongoose = require("mongoose")
 const Blog = require("../models/blog")
 const helper = require("./test_helper")
 
-// const initialBlogsDB = async () => {
-//   for(let blog of helper.initialBlogs){
-//     let newBlog = new Blog(blog)
-//     await newBlog.save()
-//   }
-// }
-
-
 beforeEach(async () => {
   await Blog.deleteMany({})
   await Blog.insertMany(helper.initialBlogs)
