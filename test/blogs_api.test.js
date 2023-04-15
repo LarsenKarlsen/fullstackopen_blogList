@@ -5,39 +5,71 @@ const mongoose = require("mongoose")
 const Blog = require("../models/blog")
 const helper = require("./test_helper")
 
-const initialBlogsDB = async () => {
-  for(let blog of helper.initialBlogs){
-    let newBlog = new Blog(blog)
-    await newBlog.save()
-  }
-}
+// const initialBlogsDB = async () => {
+//   for(let blog of helper.initialBlogs){
+//     let newBlog = new Blog(blog)
+//     await newBlog.save()
+//   }
+// }
 
 
 beforeEach(async () => {
   await Blog.deleteMany({})
-  await initialBlogsDB()
+  await Blog.insertMany(helper.initialBlogs)
 
 })
 
 const api = supertest(app)
 
-test("blogs are returned as JSON", async () => {
-  await api
-    .get("/api/blogs")
-    .expect(200)
-    .expect("Content-Type", /application\/json/)
+describe("when there is initially some blogs saved", () => {
+  test("blogs are returned as JSON", async () => {
+    await api
+      .get("/api/blogs")
+      .expect(200)
+      .expect("Content-Type", /application\/json/)
+  })
+
+  test("returned correct amount of notes", async () => {
+    const response = await api.get("/api/blogs")
+
+    expect(response.body).toHaveLength(helper.initialBlogs.length)
+  })
+
+  test("unique identifier property of the blog posts is named id", async () => {
+    const response = await api.get("/api/blogs")
+
+    expect(response.body[0]["id"]).toBeDefined()
+  })
 })
 
-test("returned correct amount of notes", async () => {
-  const response = await api.get("/api/blogs")
+describe("testing GET api/blogs/:id", () => {
+  test("succeeds with a valid id", async () => {
+    const blogsAtStart = helper.blogsInDb()
+    const blogToView = blogsAtStart[0]
 
-  expect(response.body).toHaveLength(helper.initialBlogs.length)
-})
+    const resultBlog = await api
+      .get(`/api/blogs/${blogToView.id}`)
+      .expect(200)
+      .expect("Content-Type", /application\/json/)
 
-test("unique identifier property of the blog posts is named id", async () => {
-  const response = await api.get("/api/blogs")
+    expect(resultBlog).toEqual(blogToView)
+  })
 
-  expect(response.body[0]["id"]).toBeDefined()
+  test("fails with status code 404 if blog does not exist", async () => {
+    const validNonexistingID = helper.nonExistingId()
+
+    await api
+      .get(`/api/blogs/${validNonexistingID}`)
+      .expect(404)
+  })
+
+  test("fails with status code 40 if blog id is invalid", async () => {
+    const invalidID = '5a3d5da59070081a82a3440'
+
+    await api
+      .get(`/api/blogs/${invalidID}`)
+      .expect(400)
+  })
 })
 
 test("HTTP POST request to the /api/blogs URL successfully creates a new blog post", async () => {
