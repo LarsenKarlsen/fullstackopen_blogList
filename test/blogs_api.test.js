@@ -74,7 +74,6 @@ describe("testing GET api/blogs/:id", () => {
   })
 })
 
-
 describe("testing POST api/blogs/", () => {
   test("HTTP POST request to the /api/blogs URL successfully creates a new blog post", async () => {
     const newBlog =   {
@@ -165,6 +164,28 @@ describe("testing POST api/blogs/", () => {
 
     expect(response.body.likes).toBe(0)
 
+  })
+})
+
+describe("testing DELETE api/blogs/:id", () => {
+  test("succed with status code 204 if id is valid", async() => {
+    const blogsAtStart = await helper.blogsInDb()
+    const blogToDelete = blogsAtStart[0]
+    console.log(blogToDelete.id)
+
+    await api
+      .delete(`/api/blogs/${blogToDelete.id}`)
+      .expect(204)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    expect(blogsAtEnd).toHaveLength(blogsAtStart.length - 1)
+  })
+  test("fails with statuscode 400 id is invalid", async () => {
+    const invalidId = "bubba"
+
+    await api
+      .delete(`/api/blogs/${invalidId}`)
+      .expect(400)
   })
 })
 
