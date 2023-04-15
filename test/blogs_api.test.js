@@ -44,7 +44,7 @@ describe("when there is initially some blogs saved", () => {
 
 describe("testing GET api/blogs/:id", () => {
   test("succeeds with a valid id", async () => {
-    const blogsAtStart = helper.blogsInDb()
+    const blogsAtStart = await helper.blogsInDb()
     const blogToView = blogsAtStart[0]
 
     const resultBlog = await api
@@ -52,117 +52,121 @@ describe("testing GET api/blogs/:id", () => {
       .expect(200)
       .expect("Content-Type", /application\/json/)
 
-    expect(resultBlog).toEqual(blogToView)
+    expect(resultBlog.body).toEqual(blogToView)
   })
 
-  test("fails with status code 404 if blog does not exist", async () => {
-    const validNonexistingID = helper.nonExistingId()
+  test("fails with statuscode 404 if note does not exist", async () => {
+    const validNonexistingId = await helper.nonExistingId()
+
+    console.log(validNonexistingId)
 
     await api
-      .get(`/api/blogs/${validNonexistingID}`)
+      .get(`/api/blogs/${validNonexistingId}`)
       .expect(404)
   })
 
-  test("fails with status code 40 if blog id is invalid", async () => {
-    const invalidID = '5a3d5da59070081a82a3440'
+  test("fails with statuscode 400 id is invalid", async () => {
+    const invalidId = "bubba"
 
     await api
-      .get(`/api/blogs/${invalidID}`)
+      .get(`/api/blogs/${invalidId}`)
       .expect(400)
   })
 })
 
-test("HTTP POST request to the /api/blogs URL successfully creates a new blog post", async () => {
-  const newBlog =   {
-    title: "New Test BLOG",
-    author: "Test author",
-    url: "https://test.com/",
-    likes: 42,
-  }
 
-  await api
-    .post("/api/blogs")
-    .send(newBlog)
-    .expect(201)
-    .expect("Content-Type", /application\/json/)
+describe("testing POST api/blogs/", () => {
+  test("HTTP POST request to the /api/blogs URL successfully creates a new blog post", async () => {
+    const newBlog =   {
+      title: "New Test BLOG",
+      author: "Test author",
+      url: "https://test.com/",
+      likes: 42,
+    }
 
-  const blogsAfter = await helper.blogsInDb()
-  const titles = blogsAfter.map(b => b.title)
+    await api
+      .post("/api/blogs")
+      .send(newBlog)
+      .expect(201)
+      .expect("Content-Type", /application\/json/)
 
-  expect(blogsAfter).toHaveLength(helper.initialBlogs.length + 1)
+    const blogsAfter = await helper.blogsInDb()
+    const titles = blogsAfter.map(b => b.title)
 
-  expect(titles).toContain("New Test BLOG")
+    expect(blogsAfter).toHaveLength(helper.initialBlogs.length + 1)
 
+    expect(titles).toContain("New Test BLOG")
+
+  })
+
+  test("Blog with empty title will not be saved", async () => {
+    const invalidBlog =   {
+      author: "Test author",
+      url: "https://test.com/",
+      likes: 42,
+    }
+
+    await api
+      .post("/api/blogs")
+      .send(invalidBlog)
+      .expect(400)
+
+    const blogsAfter = await helper.blogsInDb()
+    expect(blogsAfter).toHaveLength(helper.initialBlogs.length)
+
+  })
+
+  test("Blog with empty author will not be saved", async () => {
+    const invalidBlog =   {
+      title: "Test author",
+      url: "https://test.com/",
+      likes: 42,
+    }
+
+    await api
+      .post("/api/blogs")
+      .send(invalidBlog)
+      .expect(400)
+
+    const blogsAfter = await helper.blogsInDb()
+    expect(blogsAfter).toHaveLength(helper.initialBlogs.length)
+
+  })
+
+  test("Blog with empty URL will not be saved", async () => {
+    const invalidBlog =   {
+      title: "Test author",
+      author: "https://test.com/",
+      likes: 42,
+    }
+
+    await api
+      .post("/api/blogs")
+      .send(invalidBlog)
+      .expect(400)
+
+    const blogsAfter = await helper.blogsInDb()
+    expect(blogsAfter).toHaveLength(helper.initialBlogs.length)
+
+  })
+
+  test("HTTP POST request to the /api/blogs URL successfully creates a new blog post, if likes doesnt set, default value of likes = 0", async () => {
+    const newBlog =   {
+      title: "New Test BLOG",
+      author: "Test author",
+      url: "https://test.com/",
+    }
+
+    const response = await api
+      .post("/api/blogs")
+      .send(newBlog)
+      .expect(201)
+      .expect("Content-Type", /application\/json/)
+
+    expect(response.body.likes).toBe(0)
+
+  })
 })
-
-test("Blog with empty title will not be saved", async () => {
-  const invalidBlog =   {
-    author: "Test author",
-    url: "https://test.com/",
-    likes: 42,
-  }
-
-  await api
-    .post("/api/blogs")
-    .send(invalidBlog)
-    .expect(400)
-
-  const blogsAfter = await helper.blogsInDb()
-  expect(blogsAfter).toHaveLength(helper.initialBlogs.length)
-
-})
-
-test("Blog with empty author will not be saved", async () => {
-  const invalidBlog =   {
-    title: "Test author",
-    url: "https://test.com/",
-    likes: 42,
-  }
-
-  await api
-    .post("/api/blogs")
-    .send(invalidBlog)
-    .expect(400)
-
-  const blogsAfter = await helper.blogsInDb()
-  expect(blogsAfter).toHaveLength(helper.initialBlogs.length)
-
-})
-
-test("Blog with empty URL will not be saved", async () => {
-  const invalidBlog =   {
-    title: "Test author",
-    author: "https://test.com/",
-    likes: 42,
-  }
-
-  await api
-    .post("/api/blogs")
-    .send(invalidBlog)
-    .expect(400)
-
-  const blogsAfter = await helper.blogsInDb()
-  expect(blogsAfter).toHaveLength(helper.initialBlogs.length)
-
-})
-
-test("HTTP POST request to the /api/blogs URL successfully creates a new blog post, if likes doesnt set, default value of likes = 0", async () => {
-  const newBlog =   {
-    title: "New Test BLOG",
-    author: "Test author",
-    url: "https://test.com/",
-  }
-
-  const response = await api
-    .post("/api/blogs")
-    .send(newBlog)
-    .expect(201)
-    .expect("Content-Type", /application\/json/)
-
-  expect(response.body.likes).toBe(0)
-
-})
-
 
 afterAll(async () => {
   await mongoose.connection.close()
