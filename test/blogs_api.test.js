@@ -3,45 +3,8 @@ const app = require("../app")
 const mongoose = require("mongoose")
 
 const Blog = require("../models/blog")
+const helper = require("./test_helper")
 
-const initialBlogs = [
-  {
-    title: "React patterns",
-    author: "Michael Chan",
-    url: "https://reactpatterns.com/",
-    likes: 7,
-  },
-  {
-    title: "Go To Statement Considered Harmful",
-    author: "Edsger W. Dijkstra",
-    url: "http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html",
-    likes: 5,
-  },
-  {
-    title: "Canonical string reduction",
-    author: "Edsger W. Dijkstra",
-    url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html",
-    likes: 12,
-  },
-  {
-    title: "First class tests",
-    author: "Robert C. Martin",
-    url: "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll",
-    likes: 10,
-  },
-  {
-    title: "TDD harms architecture",
-    author: "Robert C. Martin",
-    url: "http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html",
-    likes: 0,
-  },
-  {
-    title: "Type wars",
-    author: "Robert C. Martin",
-    url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html",
-    likes: 2,
-  }
-]
 const initialBlogsDB = async (initialBlogs) => {
   for(let i=0;i<initialBlogs.length;i++){
     let newBlog = new Blog(initialBlogs[i])
@@ -52,7 +15,7 @@ const initialBlogsDB = async (initialBlogs) => {
 
 beforeEach(async () => {
   await Blog.deleteMany({})
-  await initialBlogsDB(initialBlogs)
+  await initialBlogsDB(helper.initialBlogs)
   await api.get("/")
 })
 
@@ -68,8 +31,106 @@ test("blogs are returned as JSON", async () => {
 test("returned correct amount of notes", async () => {
   const response = await api.get("/api/blogs")
 
-  expect(response.body).toHaveLength(initialBlogs.length)
+  expect(response.body).toHaveLength(helper.initialBlogs.length)
 })
+
+test("unique identifier property of the blog posts is named id", async () => {
+  const response = await api.get("/api/blogs")
+
+  expect(response.body[0]["id"]).toBeDefined()
+})
+
+test("HTTP POST request to the /api/blogs URL successfully creates a new blog post", async () => {
+  const newBlog =   {
+    title: "New Test BLOG",
+    author: "Test author",
+    url: "https://test.com/",
+    likes: 42,
+  }
+
+  await api
+    .post("/api/blogs")
+    .send(newBlog)
+    .expect(201)
+    .expect("Content-Type", /application\/json/)
+
+  const blogsAfter = await helper.blogsInDb()
+  const titles = blogsAfter.map(b => b.title)
+
+  expect(blogsAfter).toHaveLength(helper.initialBlogs.length + 1)
+
+  expect(titles).toContain("New Test BLOG")
+
+})
+
+test("Blog with empty title will not be saved", async () => {
+  const invalidBlog =   {
+    author: "Test author",
+    url: "https://test.com/",
+    likes: 42,
+  }
+
+  await api
+    .post("/api/blogs")
+    .send(invalidBlog)
+    .expect(400)
+
+  const blogsAfter = await helper.blogsInDb()
+  expect(blogsAfter).toHaveLength(helper.initialBlogs.length)
+
+})
+
+test("Blog with empty author will not be saved", async () => {
+  const invalidBlog =   {
+    title: "Test author",
+    url: "https://test.com/",
+    likes: 42,
+  }
+
+  await api
+    .post("/api/blogs")
+    .send(invalidBlog)
+    .expect(400)
+
+  const blogsAfter = await helper.blogsInDb()
+  expect(blogsAfter).toHaveLength(helper.initialBlogs.length)
+
+})
+
+test("Blog with empty URL will not be saved", async () => {
+  const invalidBlog =   {
+    title: "Test author",
+    author: "https://test.com/",
+    likes: 42,
+  }
+
+  await api
+    .post("/api/blogs")
+    .send(invalidBlog)
+    .expect(400)
+
+  const blogsAfter = await helper.blogsInDb()
+  expect(blogsAfter).toHaveLength(helper.initialBlogs.length)
+
+})
+
+test("HTTP POST request to the /api/blogs URL successfully creates a new blog post, if likes doesnt set, default value of likes = 0", async () => {
+  const newBlog =   {
+    title: "New Test BLOG",
+    author: "Test author",
+    url: "https://test.com/",
+  }
+
+  const response = await api
+    .post("/api/blogs")
+    .send(newBlog)
+    .expect(201)
+    .expect("Content-Type", /application\/json/)
+
+  expect(response.body.likes).toBe(0)
+
+})
+
 
 afterAll(async () => {
   await mongoose.connection.close()
