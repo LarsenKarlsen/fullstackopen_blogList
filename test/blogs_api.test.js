@@ -189,6 +189,25 @@ describe("testing DELETE api/blogs/:id", () => {
   })
 })
 
+describe("testing PUT api/blogs/:id", () => {
+  test("succed with status code 200 if id is valid", async() => {
+    const blogsAtStart = await helper.blogsInDb()
+    const blogToUpdate = blogsAtStart[0]
+
+    blogToUpdate.likes = 42
+
+    await api
+      .put(`/api/blogs/${blogToUpdate.id}`)
+      .send(blogToUpdate)
+      .expect(200)
+      .expect("Content-Type", /application\/json/)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    expect(blogsAtEnd).toHaveLength(blogsAtStart.length)
+    expect(blogsAtEnd[0]).toEqual(blogToUpdate)
+  })
+})
+
 afterAll(async () => {
   await mongoose.connection.close()
 })
