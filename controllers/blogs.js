@@ -1,8 +1,6 @@
-const jwt = require("jsonwebtoken")
 const blogsRouter = require("express").Router()
 
 const Blog = require("../models/blog")
-const User = require("../models/user")
 
 
 blogsRouter.get("/", async (request, response) => {
@@ -20,11 +18,7 @@ blogsRouter.get("/:id", async (request, response) => {
 })
 
 blogsRouter.post("/", async (request, response) => {
-  const decodedToken = jwt.verify(request.token, process.env.SECRET)
-  if (!decodedToken.id) {
-    return response.status(401).json({ error:"invalid token" })
-  }
-  const user = await User.findById(decodedToken.id)
+  const user = request.user
 
   const blog = new Blog(request.body)
   blog.user = user._id
@@ -52,14 +46,9 @@ blogsRouter.put("/:id", async (request, response) => {
 })
 
 blogsRouter.delete("/:id", async(request, response) => {
-  const decodedToken = jwt.verify(request.token, process.env.SECRET)
-  if (!decodedToken.id) {
-    return response.status(401).json({ error:"invalid token" })
-  }
-
   const blog = await Blog.findById(request.params.id)
   const blogCreatorId = blog.user.toString()
-  if (blogCreatorId !== decodedToken.id) {
+  if (blogCreatorId !== request.user.id) {
     return response.status(401).json({ error: "You dont have permission to delete this blog" })
   }
   await Blog.findByIdAndRemove(request.params.id)
