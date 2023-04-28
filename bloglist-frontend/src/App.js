@@ -6,16 +6,19 @@ import LogoutBtn from './components/LogoutBtn'
 
 import blogService from './services/blogs'
 import loginService from "./services/login"
+import BlogForm from './components/BlogForm'
+import Notification from './components/Notification'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
   const [user, setUser] = useState(null)
+  const [newBlog, setBlog] = useState({title: "", url:"", author:""})
+  const [notification, setNotification] = useState({message:"", error:false, show:false})
 
   const handleLogin = async (event) => {
     event.preventDefault()
-    console.log(`Username: ${username} Password ${password}`)
 
     try {
       const user = await loginService.login({username, password})
@@ -24,8 +27,35 @@ const App = () => {
       setPassword("")
       blogService.setToken(user.token)
       window.localStorage.setItem("loggedInBlogsAppUser", JSON.stringify(user))
+      setNotification({message:`${user.username} logged in`, error:false, show:true})
+      setTimeout(()=>{
+        setNotification({message:"", error:false, show:false})
+      }, 5000)
+
     } catch(error) {
-      console.log(error)
+      setNotification({message:error.response.data.error, error:true, show:true})
+      setTimeout(()=>{
+        setNotification({message:"", error:false, show:false})
+      }, 5000)
+    }
+  }
+
+  const handleNewBlogSubmit = async (event) => {
+    event.preventDefault()
+    try {
+      const response = await blogService.create(newBlog)
+      console.log(response)
+      setBlog({title: "", url:"", author:""})
+      setBlogs(await blogService.getAll())
+      setNotification({message:`A new blog "${response.title}" by ${response.author} added`, error:false, show:true})
+      setTimeout(()=>{
+        setNotification({message:"", error:false, show:false})
+      }, 5000)
+    } catch (error) {
+      setNotification({message:error.response.data.error, error:true, show:true})
+      setTimeout(()=>{
+        setNotification({message:"", error:false, show:false})
+      }, 5000)
     }
   }
 
@@ -49,11 +79,12 @@ const App = () => {
 
   return (
     <div>
-      
+      {notification.show && <Notification message={notification.message} error={notification.error}/>}
       {!user && <LoginForm username={username} password={password} setUsername={setUsername} setPassword={setPassword} onSubmit={handleLogin}/>}
       {user && 
       <div>
         <div>{user.username} logged in <LogoutBtn onClick={handleLogout}/></div>
+        <BlogForm onChange={setBlog} blog={newBlog} onSubmit={handleNewBlogSubmit}/>
         <h2>blogs</h2>
         {blogs.map(blog =>
           <Blog key={blog.id} blog={blog} />
