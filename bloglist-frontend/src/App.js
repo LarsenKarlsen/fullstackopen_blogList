@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 import Blog from './components/Blog'
 import LoginForm from "./components/LoginForm"
@@ -8,14 +8,16 @@ import blogService from './services/blogs'
 import loginService from "./services/login"
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
+import Togglable from './components/Togglable'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
   const [user, setUser] = useState(null)
-  const [newBlog, setBlog] = useState({title: "", url:"", author:""})
   const [notification, setNotification] = useState({message:"", error:false, show:false})
+
+  const blogFormRef = useRef()
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -40,12 +42,10 @@ const App = () => {
     }
   }
 
-  const handleNewBlogSubmit = async (event) => {
-    event.preventDefault()
+  const handleNewBlogSubmit = async (newBlog) => {
     try {
+      blogFormRef.current.toggleVisibility()
       const response = await blogService.create(newBlog)
-      console.log(response)
-      setBlog({title: "", url:"", author:""})
       setBlogs(await blogService.getAll())
       setNotification({message:`A new blog "${response.title}" by ${response.author} added`, error:false, show:true})
       setTimeout(()=>{
@@ -77,6 +77,12 @@ const App = () => {
     }
   }, [])
 
+  const blogForm = () => (
+    <Togglable buttonLabel={"Add new blog"} ref={blogFormRef}>
+      <BlogForm createBlog={handleNewBlogSubmit}/>
+    </Togglable>
+  )
+
   return (
     <div>
       {notification.show && <Notification message={notification.message} error={notification.error}/>}
@@ -84,7 +90,7 @@ const App = () => {
       {user && 
       <div>
         <div>{user.username} logged in <LogoutBtn onClick={handleLogout}/></div>
-        <BlogForm onChange={setBlog} blog={newBlog} onSubmit={handleNewBlogSubmit}/>
+        {blogForm()}
         <h2>blogs</h2>
         {blogs.map(blog =>
           <Blog key={blog.id} blog={blog} />
