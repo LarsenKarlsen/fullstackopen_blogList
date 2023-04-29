@@ -59,6 +59,38 @@ const App = () => {
     }
   }
 
+  const handleLikeBlog = async (newBlog) => {
+    try {
+      const response = await blogService.update(newBlog)
+      setBlogs(await blogService.getAll())
+      setNotification({message:`You'r like added to blog "${response.title}" by ${response.author}`, error:false, show:true})
+      setTimeout(()=>{
+        setNotification({message:"", error:false, show:false})
+      }, 5000)
+    } catch (error) {
+      setNotification({message:error.response.data.error, error:true, show:true})
+      setTimeout(()=>{
+        setNotification({message:"", error:false, show:false})
+      }, 5000)
+    }
+  }
+
+  const handleDeleteBlog = async (id) => {
+    try {
+      await blogService.deleteBlog(id)
+      setBlogs(await blogService.getAll())
+      setNotification({message:`Blog removed`, error:false, show:true})
+      setTimeout(()=>{
+        setNotification({message:"", error:false, show:false})
+      }, 5000)
+    } catch (error) {
+      setNotification({message:error.response.data.error, error:true, show:true})
+      setTimeout(()=>{
+        setNotification({message:"", error:false, show:false})
+      }, 5000)
+    }
+  }
+
   const handleLogout = () => {
     blogService.setToken(null)
     window.localStorage.removeItem("loggedInBlogsAppUser")
@@ -92,9 +124,13 @@ const App = () => {
         <div>{user.username} logged in <LogoutBtn onClick={handleLogout}/></div>
         {blogForm()}
         <h2>blogs</h2>
-        {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} />
-        )}
+        {
+          blogs
+          .sort((a,b)=>b.likes-a.likes)
+          .map(blog =>
+            <Blog key={blog.id} blog={blog} likeBlog={handleLikeBlog} delBlog={handleDeleteBlog}/>
+          )
+        }
       </div>
       }
     </div>

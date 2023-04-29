@@ -20,9 +20,10 @@ blogsRouter.get("/:id", async (request, response) => {
 
 blogsRouter.post("/", middleware.tokenExtractor, middleware.userExtractor, async (request, response) => {
   const user = request.user
+  console.log(user)
 
   const blog = new Blog(request.body)
-  blog.user = user._id
+  blog.user = user.id
   const savedBlog = await blog.save()
 
   user.blogs = user.blogs.concat(savedBlog._id)
@@ -38,10 +39,10 @@ blogsRouter.put("/:id", middleware.tokenExtractor, middleware.userExtractor, asy
     title: body.title,
     author: body.author,
     url: body.url,
-    likes: body.likes
+    likes: body.likes,
+    user: body.user
   }
-
-  const updatedBlog = await Blog.findOneAndUpdate(request.params.id, blog, { new:true })
+  const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, { new:true })
 
   response.status(200).json(updatedBlog)
 })
