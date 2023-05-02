@@ -18,7 +18,7 @@ const Blog = ({
         author: blog.author,
         url: blog.url,
         likes: blog.likes + 1,
-        },
+      },
       id: blog.id
     }
     likeBlog(req)
@@ -33,7 +33,7 @@ const Blog = ({
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
-    border: 'solid',
+    border: "solid",
     borderWidth: 1,
     marginBottom: 5
   }
@@ -50,12 +50,12 @@ const Blog = ({
       </div>
     )
   }
-  
+
   return (
-  <div style={blogStyle}>
-    <div>{blog.title} by {blog.author} <button onClick={toggleBlogDetails}>{detailsVisibility ? "hide" : "show"}</button></div>
-    {detailsVisibility && showDetails()}
-  </div>
-)}
+    <div style={blogStyle}>
+      <div>{blog.title} by {blog.author} <button onClick={toggleBlogDetails}>{detailsVisibility ? "hide" : "show"}</button></div>
+      {detailsVisibility && showDetails()}
+    </div>
+  )}
 
 export default Blog
