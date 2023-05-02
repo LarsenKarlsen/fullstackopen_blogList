@@ -1,3 +1,5 @@
+import PropTypes from "prop-types"
+
 const errorStyle = {
   color:"red",
   border:"5px solid red",
@@ -13,14 +15,19 @@ const okStyle = {
   backgroundColor:"lightgray"
 }
 
-const Notification = props => {
+const Notification = ({ error, message }) => {
   let style = okStyle
-  if (props.error) {
+  if (error) {
     style = errorStyle
   }
   return (
-    <div style={style}>{props.message}</div>
+    <div style={style}>{message}</div>
   )
+}
+
+Notification.propTypes = {
+  error: PropTypes.bool.isRequired,
+  message: PropTypes.string.isRequired
 }
 
 export default Notification
