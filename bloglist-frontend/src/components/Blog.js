@@ -42,10 +42,9 @@ const Blog = ({
   const showDetails = () => {
     return (
       <div>
-        <div><a href={blog.url}>{blog.url}</a></div>
-        <div>
-          Likes:{blog.likes} <span><button onClick={addLike}>Like</button></span>
-        </div>
+        <div className="url"><a href={blog.url}>{blog.url}</a></div>
+        <div className="likes" style={{ display:"inline" }}>Likes: {blog.likes}</div>
+        <div style={{ display:"inline" }}><button onClick={addLike}>Like</button></div>
         <div>Added by: {blog.user.username}</div>
         <div><button onClick={removeBlog}>Remove</button></div>
       </div>
@@ -53,7 +52,7 @@ const Blog = ({
   }
 
   return (
-    <div style={blogStyle}>
+    <div style={blogStyle} className="blog">
       <div>{blog.title} by {blog.author} <button onClick={toggleBlogDetails}>{detailsVisibility ? "hide" : "show"}</button></div>
       {detailsVisibility && showDetails()}
     </div>
