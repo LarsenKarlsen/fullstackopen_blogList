@@ -4,7 +4,8 @@ import PropTypes from "prop-types"
 const Blog = ({
   blog,
   likeBlog,
-  delBlog
+  delBlog,
+  user
 }) => {
   const [detailsVisibility, setDetailsVisibility] = useState(false)
 
@@ -46,7 +47,7 @@ const Blog = ({
         <div className="likes" style={{ display:"inline" }}>Likes: {blog.likes}</div>
         <div style={{ display:"inline" }}><button onClick={addLike}>Like</button></div>
         <div>Added by: {blog.user.username}</div>
-        <div><button onClick={removeBlog}>Remove</button></div>
+        {user.id === blog.user.id ? <div><button onClick={removeBlog}>Remove</button></div>: ""}
       </div>
     )
   }
@@ -61,7 +62,8 @@ const Blog = ({
 Blog.propTypes = {
   blog: PropTypes.object.isRequired,
   likeBlog: PropTypes.func.isRequired,
-  delBlog: PropTypes.func.isRequired
+  delBlog: PropTypes.func.isRequired,
+  user: PropTypes.object.isRequired
 }
 
 export default Blog
