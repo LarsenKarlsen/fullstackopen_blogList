@@ -10,11 +10,15 @@ describe("<BlogFrorm />", () => {
   beforeEach(() => {
     mockSubmit = jest.fn()
 
-    container = render(<BlogForm  createBlog={mockSubmit}/>).container
+    container = render(<BlogForm createBlog={mockSubmit} />).container
   })
 
   test("<BlogForm /> updates parent state and calls onSubmit", async () => {
-    const mockCall = { title:"test title", url:"test URL", author: "test author" }
+    const mockCall = {
+      title: "test title",
+      url: "test URL",
+      author: "test author",
+    }
 
     const user = userEvent.setup()
     const addButton = screen.getByText("Add")
@@ -29,6 +33,8 @@ describe("<BlogFrorm />", () => {
     await user.click(addButton)
 
     expect(mockSubmit.mock.calls).toHaveLength(1)
-    expect(JSON.stringify(mockSubmit.mock.calls[0][0])).toBe(JSON.stringify(mockCall))
+    expect(JSON.stringify(mockSubmit.mock.calls[0][0])).toBe(
+      JSON.stringify(mockCall)
+    )
   })
 })

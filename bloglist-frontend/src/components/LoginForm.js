@@ -5,27 +5,33 @@ const LoginForm = ({
   setUsername,
   setPassword,
   username,
-  password
+  password,
 }) => (
   <div>
     <form onSubmit={onSubmit}>
-      <div>Username:
+      <div>
+        Username:
         <input
           id="loginForm-username"
           type="text"
           name="username"
           onChange={({ target }) => setUsername(target.value)}
-          value={username}/>
+          value={username}
+        />
       </div>
-      <div>Password:
+      <div>
+        Password:
         <input
           id="loginForm-password"
           type="password"
           name="password"
           onChange={({ target }) => setPassword(target.value)}
-          value={password}/>
+          value={password}
+        />
       </div>
-      <div><input type="submit" value="LogIn" id="loginForm-submitButton"></input></div>
+      <div>
+        <input type="submit" value="LogIn" id="loginForm-submitButton"></input>
+      </div>
     </form>
   </div>
 )
@@ -35,7 +41,7 @@ LoginForm.propTypes = {
   setUsername: PropTypes.func.isRequired,
   setPassword: PropTypes.func.isRequired,
   username: PropTypes.string.isRequired,
-  password: PropTypes.string.isRequired
+  password: PropTypes.string.isRequired,
 }
 
 export default LoginForm

@@ -7,7 +7,7 @@ const LogoutBtn = ({ onClick }) => (
 )
 
 LogoutBtn.propTypes = {
-  onClick: PropTypes.func.isRequired
+  onClick: PropTypes.func.isRequired,
 }
 
 export default LogoutBtn

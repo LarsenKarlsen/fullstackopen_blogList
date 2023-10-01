@@ -11,16 +11,22 @@ describe("<Blog />", () => {
 
   beforeEach(() => {
     const testBlog = {
-      author:"test author",
+      author: "test author",
       title: "test title",
       url: "test url",
       likes: 42,
-      user:{ username:"test username" }
+      user: { username: "test username" },
     }
     mockLikeClickHandler = jest.fn()
     mockDeleteClickHandler = jest.fn()
 
-    container = render(<Blog  blog={testBlog} likeBlog={mockLikeClickHandler} delBlog={mockDeleteClickHandler}/>).container
+    container = render(
+      <Blog
+        blog={testBlog}
+        likeBlog={mockLikeClickHandler}
+        delBlog={mockDeleteClickHandler}
+      />
+    ).container
   })
 
   test("render content of Blog component", () => {
@@ -41,7 +47,7 @@ describe("<Blog />", () => {
     expect(likesElements).toHaveTextContent("Likes: 42")
   })
 
-  test("if the like button is clicked twice, the event handler the component received as props is called twice", async() => {
+  test("if the like button is clicked twice, the event handler the component received as props is called twice", async () => {
     const user = userEvent.setup()
     const button = screen.getByText("show")
     await user.click(button)
@@ -53,4 +59,3 @@ describe("<Blog />", () => {
     expect(mockLikeClickHandler.mock.calls).toHaveLength(2)
   })
 })
-
