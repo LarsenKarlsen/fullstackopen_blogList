@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react"
+import { useDispatch } from "react-redux"
 
 import Blog from "./components/Blog"
 import LoginForm from "./components/LoginForm"
@@ -10,16 +11,14 @@ import BlogForm from "./components/BlogForm"
 import Notification from "./components/Notification"
 import Togglable from "./components/Togglable"
 
+import { setNotification } from "./reducers/notificationReducer"
+
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
   const [user, setUser] = useState(null)
-  const [notification, setNotification] = useState({
-    message: "",
-    error: false,
-    show: false,
-  })
+  const dispatch = useDispatch()
 
   const blogFormRef = useRef()
 
@@ -33,23 +32,13 @@ const App = () => {
       setPassword("")
       blogService.setToken(user.token)
       window.localStorage.setItem("loggedInBlogsAppUser", JSON.stringify(user))
-      setNotification({
-        message: `${user.username} logged in`,
-        error: false,
-        show: true,
-      })
-      setTimeout(() => {
-        setNotification({ message: "", error: false, show: false })
-      }, 5000)
+      dispatch(
+        setNotification(`${user.username} logged in`)
+      )
     } catch (error) {
-      setNotification({
-        message: error.response.data.error,
-        error: true,
-        show: true,
-      })
-      setTimeout(() => {
-        setNotification({ message: "", error: false, show: false })
-      }, 5000)
+      dispatch(
+        setNotification(error.response.data.error, true)
+      )
     }
   }
 
@@ -58,23 +47,13 @@ const App = () => {
       blogFormRef.current.toggleVisibility()
       const response = await blogService.create(newBlog)
       setBlogs(await blogService.getAll())
-      setNotification({
-        message: `A new blog "${response.title}" by ${response.author} added`,
-        error: false,
-        show: true,
-      })
-      setTimeout(() => {
-        setNotification({ message: "", error: false, show: false })
-      }, 5000)
+      dispatch(
+        setNotification(`A new blog "${response.title}" by ${response.author} added`)
+      )
     } catch (error) {
-      setNotification({
-        message: error.response.data.error,
-        error: true,
-        show: true,
-      })
-      setTimeout(() => {
-        setNotification({ message: "", error: false, show: false })
-      }, 5000)
+      dispatch(
+        setNotification(error.response.data.error, true)
+      )
     }
   }
 
@@ -82,23 +61,13 @@ const App = () => {
     try {
       const response = await blogService.update(newBlog)
       setBlogs(await blogService.getAll())
-      setNotification({
-        message: `You'r like added to blog "${response.title}" by ${response.author}`,
-        error: false,
-        show: true,
-      })
-      setTimeout(() => {
-        setNotification({ message: "", error: false, show: false })
-      }, 5000)
+      dispatch(
+        setNotification(`You'r like added to blog "${response.title}" by ${response.author}`)
+      )
     } catch (error) {
-      setNotification({
-        message: error.response.data.error,
-        error: true,
-        show: true,
-      })
-      setTimeout(() => {
-        setNotification({ message: "", error: false, show: false })
-      }, 5000)
+      dispatch(
+        setNotification(error.response.data.error, true)
+      )
     }
   }
 
@@ -106,23 +75,13 @@ const App = () => {
     try {
       await blogService.deleteBlog(id)
       setBlogs(await blogService.getAll())
-      setNotification({
-        message: "Blog removed",
-        error: false,
-        show: true,
-      })
-      setTimeout(() => {
-        setNotification({ message: "", error: false, show: false })
-      }, 5000)
+      dispatch(
+        setNotification("Blog removed")
+      )
     } catch (error) {
-      setNotification({
-        message: error.response.data.error,
-        error: true,
-        show: true,
-      })
-      setTimeout(() => {
-        setNotification({ message: "", error: false, show: false })
-      }, 5000)
+      dispatch(
+        setNotification(error.response.data.error, true)
+      )
     }
   }
 
@@ -150,12 +109,7 @@ const App = () => {
 
   return (
     <div>
-      {notification.show && (
-        <Notification
-          message={notification.message}
-          error={notification.error}
-        />
-      )}
+      <Notification />
       {!user && (
         <LoginForm
           username={username}
