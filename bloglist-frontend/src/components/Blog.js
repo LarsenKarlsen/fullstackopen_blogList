@@ -73,10 +73,7 @@ const Blog = ({ blog, likeBlog, delBlog, user }) => {
 }
 
 Blog.propTypes = {
-  blog: PropTypes.object.isRequired,
-  likeBlog: PropTypes.func.isRequired,
-  delBlog: PropTypes.func.isRequired,
-  user: PropTypes.object.isRequired,
+  blog: PropTypes.object.isRequired
 }
 
 export default Blog

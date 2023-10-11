@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react"
 import { useDispatch } from "react-redux"
 
-import Blog from "./components/Blog"
+// import Blog from "./components/Blog"
 import LoginForm from "./components/LoginForm"
 import LogoutBtn from "./components/LogoutBtn"
 
@@ -12,13 +12,19 @@ import Notification from "./components/Notification"
 import Togglable from "./components/Togglable"
 
 import { setNotification } from "./reducers/notificationReducer"
+import BlogList from "./components/BlogList"
+import { initializeBlogs } from "./reducers/blogReducer"
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
+  // const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
   const [user, setUser] = useState(null)
   const dispatch = useDispatch()
+
+  useEffect(() => {
+
+  }, [])
 
   const blogFormRef = useRef()
 
@@ -46,7 +52,7 @@ const App = () => {
     try {
       blogFormRef.current.toggleVisibility()
       const response = await blogService.create(newBlog)
-      setBlogs(await blogService.getAll())
+      // setBlogs(await blogService.getAll())
       dispatch(
         setNotification(`A new blog "${response.title}" by ${response.author} added`)
       )
@@ -57,33 +63,33 @@ const App = () => {
     }
   }
 
-  const handleLikeBlog = async (newBlog) => {
-    try {
-      const response = await blogService.update(newBlog)
-      setBlogs(await blogService.getAll())
-      dispatch(
-        setNotification(`You'r like added to blog "${response.title}" by ${response.author}`)
-      )
-    } catch (error) {
-      dispatch(
-        setNotification(error.response.data.error, true)
-      )
-    }
-  }
+  // const handleLikeBlog = async (newBlog) => {
+  //   try {
+  //     const response = await blogService.update(newBlog)
+  //     setBlogs(await blogService.getAll())
+  //     dispatch(
+  //       setNotification(`You'r like added to blog "${response.title}" by ${response.author}`)
+  //     )
+  //   } catch (error) {
+  //     dispatch(
+  //       setNotification(error.response.data.error, true)
+  //     )
+  //   }
+  // }
 
-  const handleDeleteBlog = async (id) => {
-    try {
-      await blogService.deleteBlog(id)
-      setBlogs(await blogService.getAll())
-      dispatch(
-        setNotification("Blog removed")
-      )
-    } catch (error) {
-      dispatch(
-        setNotification(error.response.data.error, true)
-      )
-    }
-  }
+  // const handleDeleteBlog = async (id) => {
+  //   try {
+  //     await blogService.deleteBlog(id)
+  //     setBlogs(await blogService.getAll())
+  //     dispatch(
+  //       setNotification("Blog removed")
+  //     )
+  //   } catch (error) {
+  //     dispatch(
+  //       setNotification(error.response.data.error, true)
+  //     )
+  //   }
+  // }
 
   const handleLogout = () => {
     blogService.setToken(null)
@@ -97,7 +103,7 @@ const App = () => {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
       blogService.setToken(user.token)
-      blogService.getAll().then((blogs) => setBlogs(blogs))
+      dispatch(initializeBlogs())
     }
   }, [])
 
@@ -125,18 +131,7 @@ const App = () => {
             {user.username} logged in <LogoutBtn onClick={handleLogout} />
           </div>
           {blogForm()}
-          <h2>blogs</h2>
-          {blogs
-            .sort((a, b) => b.likes - a.likes)
-            .map((blog) => (
-              <Blog
-                key={blog.id}
-                blog={blog}
-                likeBlog={handleLikeBlog}
-                delBlog={handleDeleteBlog}
-                user={user}
-              />
-            ))}
+          <BlogList user={user}/>
         </div>
       )}
     </div>
