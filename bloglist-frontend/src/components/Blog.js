@@ -1,9 +1,9 @@
 import { useState } from "react"
 import PropTypes from "prop-types"
-import { updateBlog } from "../reducers/blogReducer"
+import { deleteBlog, updateBlog } from "../reducers/blogReducer"
 import { useDispatch } from "react-redux"
 
-const Blog = ({ blog, delBlog, user }) => {
+const Blog = ({ blog, user }) => {
   const [detailsVisibility, setDetailsVisibility] = useState(false)
 
   const toggleBlogDetails = () => {
@@ -27,7 +27,7 @@ const Blog = ({ blog, delBlog, user }) => {
 
   const removeBlog = () => {
     if (window.confirm(`Are sure to delete ${blog.title}`)) {
-      delBlog(blog.id)
+      dispatch(deleteBlog(blog.id))
     }
   }
 

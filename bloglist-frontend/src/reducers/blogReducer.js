@@ -64,4 +64,19 @@ export const updateBlog = (blog) => {
   }
 }
 
+export const deleteBlog = (id) => {
+  return async (dispatch) => {
+    try {
+      await blogService.deleteBlog(id)
+      dispatch(setNotification("Blog deleted"))
+      dispatch(initializeBlogs())
+    }
+    catch (error) {
+      dispatch(
+        setNotification(`${error}`)
+      )
+    }
+  }
+}
+
 export default blogSlice.reducer
