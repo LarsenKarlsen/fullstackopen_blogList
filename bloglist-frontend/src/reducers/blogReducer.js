@@ -15,10 +15,13 @@ const blogSlice = createSlice({
     addNewBlog(state, action) {
       return [...state, action.payload]
     },
+    blogUpdate(state, action){
+      return state.map(blog => blog.id !== action.payload.id ? blog: action.payload)
+    }
   },
 })
 
-export const { setBlogs, addNewBlog } = blogSlice.actions
+export const { setBlogs, addNewBlog, blogUpdate } = blogSlice.actions
 
 export const initializeBlogs = () => {
   return async (dispatch) => {
@@ -40,6 +43,24 @@ export const addBlog = (blog) => {
         `A new blog "${response.title}" by ${response.author} added`
       )
     )
+  }
+}
+
+export const updateBlog = (blog) => {
+  return async (dispatch) => {
+    try {
+      const response = await blogService.update(blog)
+      const updatedBlog = { ...response, id: blog.id }
+      dispatch(blogUpdate(updatedBlog))
+      dispatch(setNotification(
+        `You liked ${updatedBlog.title} blog by ${updatedBlog.author}`
+      ))
+    }
+    catch (error) {
+      dispatch(
+        setNotification(`${error}`)
+      )
+    }
   }
 }
 

@@ -1,12 +1,16 @@
 import { useState } from "react"
 import PropTypes from "prop-types"
+import { updateBlog } from "../reducers/blogReducer"
+import { useDispatch } from "react-redux"
 
-const Blog = ({ blog, likeBlog, delBlog, user }) => {
+const Blog = ({ blog, delBlog, user }) => {
   const [detailsVisibility, setDetailsVisibility] = useState(false)
 
   const toggleBlogDetails = () => {
     setDetailsVisibility(!detailsVisibility)
   }
+
+  const dispatch = useDispatch()
 
   const addLike = () => {
     const req = {
@@ -18,7 +22,7 @@ const Blog = ({ blog, likeBlog, delBlog, user }) => {
       },
       id: blog.id,
     }
-    likeBlog(req)
+    dispatch(updateBlog(req))
   }
 
   const removeBlog = () => {
