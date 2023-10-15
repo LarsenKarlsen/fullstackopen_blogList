@@ -22,9 +22,7 @@ const App = () => {
   const [user, setUser] = useState(null)
   const dispatch = useDispatch()
 
-  useEffect(() => {
-
-  }, [])
+  useEffect(() => {}, [])
 
   const blogFormRef = useRef()
 
@@ -38,13 +36,9 @@ const App = () => {
       setPassword("")
       blogService.setToken(user.token)
       window.localStorage.setItem("loggedInBlogsAppUser", JSON.stringify(user))
-      dispatch(
-        setNotification(`${user.username} logged in`)
-      )
+      dispatch(setNotification(`${user.username} logged in`))
     } catch (error) {
-      dispatch(
-        setNotification(error.response.data.error, true)
-      )
+      dispatch(setNotification(error.response.data.error, true))
     }
   }
 
@@ -54,12 +48,12 @@ const App = () => {
       const response = await blogService.create(newBlog)
       // setBlogs(await blogService.getAll())
       dispatch(
-        setNotification(`A new blog "${response.title}" by ${response.author} added`)
+        setNotification(
+          `A new blog "${response.title}" by ${response.author} added`
+        )
       )
     } catch (error) {
-      dispatch(
-        setNotification(error.response.data.error, true)
-      )
+      dispatch(setNotification(error.response.data.error, true))
     }
   }
 
@@ -131,7 +125,7 @@ const App = () => {
             {user.username} logged in <LogoutBtn onClick={handleLogout} />
           </div>
           {blogForm()}
-          <BlogList user={user}/>
+          <BlogList user={user} />
         </div>
       )}
     </div>

@@ -13,7 +13,6 @@ const BlogForm = () => {
     setNewBlog({ title: "", url: "", author: "" })
   }
 
-
   return (
     <div>
       <form onSubmit={handleNewBlogSubmit}>

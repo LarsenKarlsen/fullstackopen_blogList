@@ -12,31 +12,34 @@ const blogSlice = createSlice({
     setBlogs(state, action) {
       return action.payload
     },
-    addNewBlog(state, action){
+    addNewBlog(state, action) {
       return [...state, action.payload]
-    }
-  }
+    },
+  },
 })
 
 export const { setBlogs, addNewBlog } = blogSlice.actions
 
 export const initializeBlogs = () => {
-  return async dispatch => {
+  return async (dispatch) => {
     try {
       const blogs = await blogService.getAll()
       dispatch(setBlogs(blogs))
-    }
-    catch(error) {
+    } catch (error) {
       dispatch(setNotification(error, true))
     }
   }
 }
 
-export const addBlog = blog => {
-  return async dispatch => {
+export const addBlog = (blog) => {
+  return async (dispatch) => {
     const response = await blogService.create(blog)
     dispatch(addNewBlog(response))
-    dispatch(setNotification(`A new blog "${response.title}" by ${response.author} added`))
+    dispatch(
+      setNotification(
+        `A new blog "${response.title}" by ${response.author} added`
+      )
+    )
   }
 }
 

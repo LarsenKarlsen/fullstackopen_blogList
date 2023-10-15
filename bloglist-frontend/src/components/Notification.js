@@ -26,9 +26,10 @@ const Notification = () => {
       {notification.show && (
         <div style={style} id="notification-message">
           {notification.message}
-        </div>)
-      }
-    </>)
+        </div>
+      )}
+    </>
+  )
 }
 
 export default Notification

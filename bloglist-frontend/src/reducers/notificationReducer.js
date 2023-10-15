@@ -22,7 +22,7 @@ const notificationSlice = createSlice({
 export const { showNotification, hideNotification, showErrorNotification } =
   notificationSlice.actions
 
-export const setNotification = (message, error=false, time=5000) => {
+export const setNotification = (message, error = false, time = 5000) => {
   return async (dispatch) => {
     if (!error) {
       dispatch(showNotification(message))
