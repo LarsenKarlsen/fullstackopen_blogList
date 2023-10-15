@@ -1,10 +1,13 @@
 import { useState } from "react"
 import PropTypes from "prop-types"
 import { deleteBlog, updateBlog } from "../reducers/blogReducer"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 
-const Blog = ({ blog, user }) => {
+const Blog = ({ blog }) => {
   const [detailsVisibility, setDetailsVisibility] = useState(false)
+  const user = useSelector(state => state.user)
+  console.log(user)
+  console.log(blog)
 
   const toggleBlogDetails = () => {
     setDetailsVisibility(!detailsVisibility)
