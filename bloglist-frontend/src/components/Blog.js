@@ -3,6 +3,9 @@ import PropTypes from "prop-types"
 import { deleteBlog, updateBlog } from "../reducers/blogReducer"
 import { useDispatch, useSelector } from "react-redux"
 
+import { Button, Card } from "react-bootstrap"
+import { HandThumbsUp } from "react-bootstrap-icons"
+
 const Blog = ({ blog }) => {
   const [detailsVisibility, setDetailsVisibility] = useState(false)
   const user = useSelector(state => state.user)
@@ -75,6 +78,19 @@ const Blog = ({ blog }) => {
         </button>
       </div>
       {detailsVisibility && showDetails()}
+      <Card style={{ width:"18rem" }} className="text-center">
+        <Card.Body>
+          <Card.Title>{blog.title}</Card.Title>
+          <Card.Subtitle>by {blog.author}</Card.Subtitle>
+          <Card.Link>{blog.url}</Card.Link>
+          <Card.Text className="text-centert">
+            <Button>
+              <HandThumbsUp /> {blog.likes}
+            </Button>
+          </Card.Text>
+          <Card.Text>Added by {blog.user.username}</Card.Text>
+        </Card.Body>
+      </Card>
     </div>
   )
 }
