@@ -28,8 +28,9 @@ blogsRouter.post("/", middleware.tokenExtractor, middleware.userExtractor, async
 
   user.blogs = user.blogs.concat(savedBlog._id)
   await user.save()
+  const blogResponse = await Blog.findById(savedBlog.id).populate("user", { blogs:0 }) // we need this bcs we need populate user field and send this to frontend
 
-  response.status(201).json(savedBlog)
+  response.status(201).json(blogResponse)
 })
 
 blogsRouter.put("/:id", middleware.tokenExtractor, middleware.userExtractor, async (request, response) => {
