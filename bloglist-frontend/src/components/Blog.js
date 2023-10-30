@@ -3,8 +3,8 @@ import PropTypes from "prop-types"
 import { deleteBlog, updateBlog } from "../reducers/blogReducer"
 import { useDispatch, useSelector } from "react-redux"
 
-import { Button, Card } from "react-bootstrap"
-import { HandThumbsUp } from "react-bootstrap-icons"
+import { Button, Card, Dropdown } from "react-bootstrap"
+import { HandThumbsUp, ThreeDots, Trash, Eye, EyeSlash } from "react-bootstrap-icons"
 
 const Blog = ({ blog }) => {
   const [detailsVisibility, setDetailsVisibility] = useState(false)
@@ -37,58 +37,43 @@ const Blog = ({ blog }) => {
     }
   }
 
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: "solid",
-    borderWidth: 1,
-    marginBottom: 5,
-  }
-
   const showDetails = () => {
     return (
-      <div>
-        <div className="url">
-          <a href={blog.url}>{blog.url}</a>
-        </div>
-        <div className="likes" style={{ display: "inline" }}>
-          Likes: {blog.likes}
-        </div>
-        <div style={{ display: "inline" }}>
-          <button onClick={addLike}>Like</button>
-        </div>
-        <div>Added by: {blog.user.username}</div>
-        {user.id === blog.user.id ? (
-          <div>
-            <button onClick={removeBlog}>Remove</button>
-          </div>
-        ) : (
-          ""
-        )}
-      </div>
+      <>
+        <Card.Link>{blog.url}</Card.Link>
+        <Card.Text className="text-centert">
+          <Button onClick={addLike}>
+            <HandThumbsUp /> {blog.likes}
+          </Button>
+        </Card.Text>
+        <Card.Text>Added by {blog.user.username}</Card.Text>
+      </>
     )
   }
 
   return (
-    <div style={blogStyle} className="blog">
-      <div>
-        {blog.title} by {blog.author}{" "}
-        <button onClick={toggleBlogDetails}>
-          {detailsVisibility ? "hide" : "show"}
-        </button>
-      </div>
-      {detailsVisibility && showDetails()}
+    <div>
       <Card style={{ width:"18rem" }} className="text-center">
+        <Dropdown style={{ textAlign:"right" }}>
+          <Dropdown.Toggle variant="success" style={{ backgroundColor:"transparent", border:"none", color:"black" }}>
+            <ThreeDots />
+          </Dropdown.Toggle>
+
+          <Dropdown.Menu>
+            <Dropdown.Item onClick={toggleBlogDetails}>
+              {detailsVisibility ? <EyeSlash></EyeSlash>  : <Eye></Eye>} {detailsVisibility ? "Hide" : "Show"}
+            </Dropdown.Item>
+            {user.id === blog.user.id ? (
+              <>
+                <Dropdown.Item onClick={removeBlog}><Trash /> Remove</Dropdown.Item>
+              </>
+            ):""}
+          </Dropdown.Menu>
+        </Dropdown>
         <Card.Body>
           <Card.Title>{blog.title}</Card.Title>
           <Card.Subtitle>by {blog.author}</Card.Subtitle>
-          <Card.Link>{blog.url}</Card.Link>
-          <Card.Text className="text-centert">
-            <Button>
-              <HandThumbsUp /> {blog.likes}
-            </Button>
-          </Card.Text>
-          <Card.Text>Added by {blog.user.username}</Card.Text>
+          {detailsVisibility && showDetails()}
         </Card.Body>
       </Card>
     </div>
