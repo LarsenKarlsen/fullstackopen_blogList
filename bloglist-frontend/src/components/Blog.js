@@ -9,8 +9,6 @@ import { HandThumbsUp, ThreeDots, Trash, Eye, EyeSlash } from "react-bootstrap-i
 const Blog = ({ blog }) => {
   const [detailsVisibility, setDetailsVisibility] = useState(false)
   const user = useSelector(state => state.user)
-  console.log(user)
-  console.log(blog)
 
   const toggleBlogDetails = () => {
     setDetailsVisibility(!detailsVisibility)
