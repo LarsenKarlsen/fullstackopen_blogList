@@ -20,20 +20,37 @@ const BlogForm = () => {
   }
 
   return (
-    <Form onSubmit={handleNewBlogSubmit}>
+    <Form className="border-0" onSubmit={handleNewBlogSubmit}>
       <Form.Group>
         <Form.Label>Title</Form.Label>
-        <Form.Control type={title.type} onChange={title.onChange} placeholder="Blog title"/>
+        <Form.Control
+          type={title.type}
+          onChange={title.onChange}
+          placeholder="Blog title"
+        />
       </Form.Group>
       <Form.Group>
         <Form.Label>Author</Form.Label>
-        <Form.Control type={author.type} onChange={author.onChange} placeholder="Blog author"/>
+        <Form.Control
+          type={author.type}
+          onChange={author.onChange}
+          placeholder="Blog author"
+        />
       </Form.Group>
       <Form.Group>
         <Form.Label>URL</Form.Label>
-        <Form.Control type={url.type} onChange={url.onChange} placeholder="Blog URL address"/>
+        <Form.Control
+          type={url.type}
+          onChange={url.onChange}
+          placeholder="Blog URL address"
+        />
       </Form.Group>
-      <Button variant="outline-primary" type="submit">Submit</Button>
+      <Button variant="outline-primary" type="submit">
+        Submit
+      </Button>
+      <Button variant="outline-danger" onClick={() => document.querySelector(".accordion-button").click()}>
+        Cancel
+      </Button>
     </Form>
   )
 }
