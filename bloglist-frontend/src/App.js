@@ -16,7 +16,7 @@ import { setUser, userLogout } from "./reducers/userReducer"
 
 const App = () => {
   const dispatch = useDispatch()
-  const user = useSelector(state => state.user)
+  const user = useSelector((state) => state.user)
 
   const blogFormRef = useRef()
 
@@ -43,17 +43,21 @@ const App = () => {
   return (
     <div className="container">
       <Notification />
-      {!user && (
-        <LoginForm />
-      )}
+      {!user && <LoginForm />}
       {user && (
         <div>
           <Navbar>
-            <Stack style={{ width:"100%" }} direction="horizontal" gap={3}>
-              <div className="p-2"><Navbar.Brand className="p-2">BlogList</Navbar.Brand></div>
-              <div className="p-2 ms-auto">You logged in as {user.username}</div>
+            <Stack style={{ width: "100%" }} direction="horizontal" gap={3}>
+              <div className="p-2">
+                <Navbar.Brand className="p-2">BlogList</Navbar.Brand>
+              </div>
+              <div className="p-2 ms-auto">
+                You logged in as {user.username}
+              </div>
               <div className="vr" />
-              <div className="p-2"><LogoutBtn onClick={handleLogout}/></div>
+              <div className="p-2">
+                <LogoutBtn onClick={handleLogout} />
+              </div>
             </Stack>
           </Navbar>
           {blogForm()}

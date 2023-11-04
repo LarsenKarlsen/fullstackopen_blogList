@@ -14,7 +14,7 @@ const style = {
 const LogoutBtn = ({ onClick }) => (
   <>
     <Button variant="outline-secondary" onClick={onClick} style={style}>
-      <div className='d-flex justify-content-center'>
+      <div className="d-flex justify-content-center">
         <BoxArrowRight />
       </div>
     </Button>

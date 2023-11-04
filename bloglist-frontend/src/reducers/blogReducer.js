@@ -15,9 +15,11 @@ const blogSlice = createSlice({
     addNewBlog(state, action) {
       return [...state, action.payload]
     },
-    blogUpdate(state, action){
-      return state.map(blog => blog.id !== action.payload.id ? blog: action.payload)
-    }
+    blogUpdate(state, action) {
+      return state.map((blog) =>
+        blog.id !== action.payload.id ? blog : action.payload
+      )
+    },
   },
 })
 
@@ -52,14 +54,13 @@ export const updateBlog = (blog) => {
       const response = await blogService.update(blog)
       const updatedBlog = { ...response, id: blog.id }
       dispatch(blogUpdate(updatedBlog))
-      dispatch(setNotification(
-        `You liked ${updatedBlog.title} blog by ${updatedBlog.author}`
-      ))
-    }
-    catch (error) {
       dispatch(
-        setNotification(`${error}`)
+        setNotification(
+          `You liked ${updatedBlog.title} blog by ${updatedBlog.author}`
+        )
       )
+    } catch (error) {
+      dispatch(setNotification(`${error}`))
     }
   }
 }
@@ -70,11 +71,8 @@ export const deleteBlog = (id) => {
       await blogService.deleteBlog(id)
       dispatch(setNotification("Blog deleted"))
       dispatch(initializeBlogs())
-    }
-    catch (error) {
-      dispatch(
-        setNotification(`${error}`)
-      )
+    } catch (error) {
+      dispatch(setNotification(`${error}`))
     }
   }
 }

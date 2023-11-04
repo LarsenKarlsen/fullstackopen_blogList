@@ -36,7 +36,11 @@ const LoginForm = () => {
           />
         </div>
         <div>
-          <input type="submit" value="LogIn" id="loginForm-submitButton"></input>
+          <input
+            type="submit"
+            value="LogIn"
+            id="loginForm-submitButton"
+          ></input>
         </div>
       </form>
     </div>

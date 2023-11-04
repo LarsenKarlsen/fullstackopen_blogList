@@ -5,9 +5,9 @@ import Blog from "./Blog"
 import { CardGroup } from "react-bootstrap"
 
 const BlogList = () => {
-  let blogs = useSelector(state => {
-    if (state.blogs.length > 0 ) {
-      return [...state.blogs].sort((a,b) => b.likes - a.likes)
+  let blogs = useSelector((state) => {
+    if (state.blogs.length > 0) {
+      return [...state.blogs].sort((a, b) => b.likes - a.likes)
     }
     return state.blogs
   })

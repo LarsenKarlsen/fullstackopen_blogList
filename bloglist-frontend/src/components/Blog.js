@@ -4,11 +4,17 @@ import { deleteBlog, updateBlog } from "../reducers/blogReducer"
 import { useDispatch, useSelector } from "react-redux"
 
 import { Button, Card, Dropdown } from "react-bootstrap"
-import { HandThumbsUp, ThreeDots, Trash, Eye, EyeSlash } from "react-bootstrap-icons"
+import {
+  HandThumbsUp,
+  ThreeDots,
+  Trash,
+  Eye,
+  EyeSlash,
+} from "react-bootstrap-icons"
 
 const Blog = ({ blog }) => {
   const [detailsVisibility, setDetailsVisibility] = useState(false)
-  const user = useSelector(state => state.user)
+  const user = useSelector((state) => state.user)
 
   const toggleBlogDetails = () => {
     setDetailsVisibility(!detailsVisibility)
@@ -51,21 +57,33 @@ const Blog = ({ blog }) => {
 
   return (
     <div>
-      <Card style={{ width:"18rem" }} className="text-center">
-        <Dropdown style={{ textAlign:"right" }}>
-          <Dropdown.Toggle variant="success" style={{ backgroundColor:"transparent", border:"none", color:"black" }}>
+      <Card style={{ width: "18rem" }} className="text-center">
+        <Dropdown style={{ textAlign: "right" }}>
+          <Dropdown.Toggle
+            variant="success"
+            style={{
+              backgroundColor: "transparent",
+              border: "none",
+              color: "black",
+            }}
+          >
             <ThreeDots />
           </Dropdown.Toggle>
 
           <Dropdown.Menu>
             <Dropdown.Item onClick={toggleBlogDetails}>
-              {detailsVisibility ? <EyeSlash></EyeSlash>  : <Eye></Eye>} {detailsVisibility ? "Hide" : "Show"}
+              {detailsVisibility ? <EyeSlash></EyeSlash> : <Eye></Eye>}{" "}
+              {detailsVisibility ? "Hide" : "Show"}
             </Dropdown.Item>
             {user.id === blog.user.id ? (
               <>
-                <Dropdown.Item onClick={removeBlog}><Trash /> Remove</Dropdown.Item>
+                <Dropdown.Item onClick={removeBlog}>
+                  <Trash /> Remove
+                </Dropdown.Item>
               </>
-            ):""}
+            ) : (
+              ""
+            )}
           </Dropdown.Menu>
         </Dropdown>
         <Card.Body>

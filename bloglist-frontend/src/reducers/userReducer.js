@@ -11,22 +11,21 @@ const userSlice = createSlice({
   reducers: {
     userSet(state, action) {
       return action.payload
-    }
-  }
+    },
+  },
 })
 
 export const { userSet } = userSlice.actions
 
 export const userLogin = (userCredentials) => {
   return async (dispatch) => {
-    try{
+    try {
       const user = await loginService.login(userCredentials)
       dispatch(userSet(user))
       blogService.setToken(user.token)
       window.localStorage.setItem("loggedInBlogsAppUser", JSON.stringify(user))
       dispatch(setNotification(`${user.username} logged in`))
-    }
-    catch (error){
+    } catch (error) {
       dispatch(setNotification(`${error}`))
     }
   }
