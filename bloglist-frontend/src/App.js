@@ -36,8 +36,8 @@ const App = () => {
     <>
       <Accordion className="border-0">
         <Accordion.Item className="border-0" eventKey="0">
-          <Accordion.Header id="newBlogFormACC">
-            Add new blog
+          <Accordion.Header>
+          Add new blog
           </Accordion.Header>
           <Accordion.Collapse eventKey="0">
             <BlogForm />

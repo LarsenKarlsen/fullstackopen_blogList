@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useState } from "react"
 import { useDispatch } from "react-redux"
 import { useField } from "../hooks"
@@ -9,14 +10,16 @@ const BlogForm = () => {
   const title = useField("text")
   const author = useField("text")
   const url = useField("text")
-  const [newBlog, setNewBlog] = useState({ title: "", url: "", author: "" })
+  const formFields = [title, author, url]
   const dispatch = useDispatch()
 
   const handleNewBlogSubmit = (event) => {
     event.preventDefault()
-    setNewBlog({ title: title.value, url: url.value, author: author.value })
+    const newBlog = { title: title.value, url: url.value, author: author.value }
     dispatch(addBlog(newBlog))
-    setNewBlog({ title: "", url: "", author: "" })
+    formFields.forEach(element => {
+      element.reset()
+    })
   }
 
   return (
@@ -26,6 +29,7 @@ const BlogForm = () => {
         <Form.Control
           type={title.type}
           onChange={title.onChange}
+          value={title.value}
           placeholder="Blog title"
         />
       </Form.Group>
@@ -34,6 +38,7 @@ const BlogForm = () => {
         <Form.Control
           type={author.type}
           onChange={author.onChange}
+          value={author.value}
           placeholder="Blog author"
         />
       </Form.Group>
@@ -42,13 +47,14 @@ const BlogForm = () => {
         <Form.Control
           type={url.type}
           onChange={url.onChange}
+          value={url.value}
           placeholder="Blog URL address"
         />
       </Form.Group>
-      <Button variant="outline-primary" type="submit">
+      <Button variant="outline-primary" type="submit" className="me-2 mt-2">
         Submit
       </Button>
-      <Button variant="outline-danger" onClick={() => document.querySelector(".accordion-button").click()}>
+      <Button variant="outline-danger" className="me-2 mt-2" onClick={() => document.querySelector(".accordion-button").click()}>
         Cancel
       </Button>
     </Form>
