@@ -8,6 +8,7 @@ import blogService from "./services/blogs"
 import BlogForm from "./components/BlogForm"
 import Notification from "./components/Notification"
 import Togglable from "./components/Togglable"
+import { Navbar, Stack } from "react-bootstrap"
 
 import BlogList from "./components/BlogList"
 import { initializeBlogs } from "./reducers/blogReducer"
@@ -47,9 +48,14 @@ const App = () => {
       )}
       {user && (
         <div>
-          <div>
-            {user.username} logged in <LogoutBtn onClick={handleLogout} />
-          </div>
+          <Navbar>
+            <Stack style={{ width:"100%" }} direction="horizontal" gap={3}>
+              <div className="p-2"><Navbar.Brand className="p-2">BlogList</Navbar.Brand></div>
+              <div className="p-2 ms-auto">You logged in as {user.username}</div>
+              <div className="vr" />
+              <div className="p-2"><LogoutBtn onClick={handleLogout}/></div>
+            </Stack>
+          </Navbar>
           {blogForm()}
           <BlogList />
         </div>
